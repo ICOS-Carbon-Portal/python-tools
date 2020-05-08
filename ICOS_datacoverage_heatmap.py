@@ -1,6 +1,11 @@
 # (c) ICOS Carbon Portal, Lund Sweden
 # Author: Alex Vermeulen, alex.vermeulen@icos-ri.eu
+# May 2020
 # licence: GNU GENERAL PUBLIC LICENSE V3
+#
+# Create heatmap showing data coverage of raw data available from ICOS Carbon Portal
+# as submitted by the measurements stations of the domains Ecosystem and Atmosphere
+
 
 import pandas as pd
 import datetime as dt
