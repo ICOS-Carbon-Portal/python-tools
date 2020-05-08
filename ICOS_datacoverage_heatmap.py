@@ -48,7 +48,7 @@ def plot_coverage(domain="atm"):
     if domain=="atm":
         objectspecs="<http://meta.icos-cp.eu/resources/cpmeta/atcLosGatosL0DataObject>"+\
                     " <http://meta.icos-cp.eu/resources/cpmeta/atcPicarroL0DataObject>"
-        stationidlen=4
+        stationidlen=3
         domaintitle="Atmosphere"
     else:
         if domain=="eco":
