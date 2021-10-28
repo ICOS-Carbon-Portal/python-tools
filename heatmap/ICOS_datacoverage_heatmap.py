@@ -203,13 +203,38 @@ def plot_coverage(domain='atm'):
 
 
 def initialise_data():
+    end_datetime = pd.to_datetime('now')
+    six_months_timedelta = pd.Timedelta('180 days')
+    start_datetime = end_datetime - six_months_timedelta
+    now = end_datetime.strftime('%Y-%m-%d')
+    six_months_ago = start_datetime.strftime('%Y-%m-%d')
     data = dict({
         'atmosphere': {
+            'data': {
+                'raw_data': pd.DataFrame(),
+                'parsed_data': pd.DataFrame()
+            },
+            'dates': {
+                'now': now,
+                'six_months_ago': six_months_ago
+            },
+            'stations_id_length': 3,
+            'stations': [],
             'object_specification':
                 '<http://meta.icos-cp.eu/resources/cpmeta/atcLosGatosL0DataObject>' +
                 '<http://meta.icos-cp.eu/resources/cpmeta/atcPicarroL0DataObject>'
         },
         'ecosystem': {
+            'data': {
+                'raw_data': pd.DataFrame(),
+                'parsed_data': pd.DataFrame()
+            },
+            'dates': {
+                'now': now,
+                'six_months_ago': six_months_ago
+            },
+            'stations_id_length': 6,
+            'stations': [],
             'object_specification':
                 '<http://meta.icos-cp.eu/resources/cpmeta/etcEddyFluxRawSeriesCsv>' +
                 '<http://meta.icos-cp.eu/resources/cpmeta/etcEddyFluxRawSeriesBin>'
@@ -244,36 +269,55 @@ def run_query():
     query = heatmap_data[key]['query']
     # todo: UNCOMMENT THIS
     # Run the sparql query via the icos pylib Sparql module.
-    # dataframe = RunSparql(sparql_query=query, output_format='pandas').run()
+    # raw_data = RunSparql(sparql_query=query, output_format='pandas').run()
     ###
     # todo: REMOVE THIS
-    dataframe = pd.read_csv(key + '_new.csv')
+    raw_data = pd.read_csv(key + '_new.csv')
     ###
-    heatmap_data[key]['dataframe'] = dataframe
+    heatmap_data[key]['data']['raw_data'] = raw_data
     # todo: REMOVE THIS
-    # dataframe.to_csv(key + '_new.csv')
+    # raw_data.to_csv(key + '_new.csv')
     return
 
 
 def parse_data():
-    data = heatmap_data[key]['dataframe']
-    print(data)
-    data['timeStart'] = pd.to_datetime(data['timeStart'])
-    data['timeEnd'] = pd.to_datetime(data['timeEnd'])
-    data['start'] = data['timeStart']
-    data['period'] = data['timeEnd'] - data['start']
-    data = data.set_index('timeStart')
-    data['station'] = data.fileName.str[0:station_id_len]
-    data = data.drop(columns='fileName')
+    raw_data = heatmap_data[key]['data']['raw_data']
+    station_id_length = heatmap_data[key]['stations_id_length']
+    start = heatmap_data[key]['dates']['six_months_ago']
+    end = heatmap_data[key]['dates']['now']
+
+    parsed_data = raw_data.copy()
+    parsed_data['timeStart'] = pd.to_datetime(parsed_data['timeStart'])
+    parsed_data['timeEnd'] = pd.to_datetime(parsed_data['timeEnd'])
+    parsed_data['start'] = parsed_data['timeStart']
+    parsed_data['period'] = parsed_data['timeEnd'] - parsed_data['start']
+    parsed_data = parsed_data.set_index('timeStart')
+    parsed_data['station'] = parsed_data.fileName.str[0:station_id_length]
+    parsed_data = parsed_data.drop(columns='fileName')
+    stations = sorted(parsed_data['station'].unique())
+
+    heatmap_data[key]['data']['parsed_data'] = parsed_data
+    heatmap_data[key]['data']['parsed_data_last_6_months'] = \
+        parsed_data.loc[(parsed_data['start'] >= start) & (parsed_data['start'] <= end)]
+    heatmap_data[key]['stations'] = stations
     return
 
-# [key]['dataframe'],
+# [key]['data']['raw_data'],
+# [key]['data']['parsed_data'],
 # [key]['query']
+# [key]['stations_id_length']
+
 
 heatmap_data = initialise_data()
 for key in heatmap_data.keys():
     create_query()
-    run_query()
+    run_query()  # todo: FIX INSIDE FUNCTION.
     parse_data()
-# print(type(heatmap_data['atmosphere']['dataframe']))
-# data = request_sparql_queries(object_specifications)
+
+# pprint(heatmap_data)
+print(heatmap_data['atmosphere']['data']['parsed_data_last_6_months'])
+# atm_last_6_months = atm.loc[(atm['start'] >= start) & (atm['start'] <= end)]
+# start = heatmap_data[key]['dates']['six_months_ago']
+# print(type(start))
+# parsed_data = heatmap_data['atmosphere']['data']['parsed_data']
+# print(parsed_data.loc[parsed_data['start'] >= start])
