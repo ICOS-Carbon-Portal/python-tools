@@ -212,7 +212,11 @@ def initialise_data():
         'atmosphere': {
             'data': {
                 'raw_data': pd.DataFrame(),
-                'parsed_data': pd.DataFrame()
+                'parsed_data': pd.DataFrame(),
+                'plot_data': {
+                    'monthly_binned_result': pd.DataFrame(),
+                    'weekly_binned_result': pd.DataFrame()
+                }
             },
             'dates': {
                 'now': now,
@@ -227,7 +231,11 @@ def initialise_data():
         'ecosystem': {
             'data': {
                 'raw_data': pd.DataFrame(),
-                'parsed_data': pd.DataFrame()
+                'parsed_data': pd.DataFrame(),
+                'plot_data': {
+                    'monthly_binned_result': pd.DataFrame(),
+                    'weekly_binned_result': pd.DataFrame()
+                }
             },
             'dates': {
                 'now': now,
@@ -302,10 +310,114 @@ def parse_data():
     heatmap_data[key]['stations'] = stations
     return
 
-# [key]['data']['raw_data'],
-# [key]['data']['parsed_data'],
-# [key]['query']
-# [key]['stations_id_length']
+
+def create_heatmap_data():
+    stations = heatmap_data[key]['stations']
+    parsed_data = heatmap_data[key]['data']['parsed_data']
+    parsed_data_last_6_months = heatmap_data[key]['data']['parsed_data_last_6_months']
+    monthly_binned_result = pd.DataFrame()
+    weekly_binned_result = pd.DataFrame()
+    for station in stations:
+        series = parsed_data.query('station == "' + station + '"')['period']
+        series = series.rename(station)
+        # Resample the dataframe in monthly bins.
+        series = series.resample('M').sum()/dt.timedelta(days=30)*100
+        # Concatenate each station's data to the 'result' dataframe.
+        monthly_binned_result = pd.concat([monthly_binned_result, series], axis=1, sort=False)
+
+        series = parsed_data_last_6_months.query('station == "' + station + '"')['period']
+        series = series.rename(station)
+        # Resample the dataframe in weekly bins.
+        series = series.resample('W').sum()/dt.timedelta(days=7)*100
+        # Concatenate each station's data to the 'result' dataframe.
+        weekly_binned_result = pd.concat([weekly_binned_result, series], axis=1, sort=False)
+
+    rework_index(result_dict={'monthly': monthly_binned_result, 'weekly': weekly_binned_result})
+    # Create a new index for the res dataframe using parts of the
+    # previous index. This new index can be used automatically
+    # by the call to heatmap() and contains dates in the form MM-YY.
+    # new_index = monthly_binned_result.index.to_list()
+    # for i in range(len(new_index)):
+    #     timestamp = new_index[i]
+    #     # Date-time index with MM-YY format.
+    #     new_index[i] = timestamp.strftime('%m-%y')
+    # monthly_binned_result.index = new_index
+    # monthly_binned_result = monthly_binned_result.transpose()
+
+    # new_index = weekly_binned_result.index.to_list()
+    # for i in range(len(new_index)):
+    #     timestamp = new_index[i]
+    #     # Date-time index with WW-YY format.
+    #     new_index[i] = timestamp.strftime('%U-%y')
+    # weekly_binned_result.index = new_index
+    # weekly_binned_result = weekly_binned_result.transpose()
+
+    heatmap_data[key]['data']['plot_data']['monthly_binned_result'] = \
+        monthly_binned_result.transpose()
+    heatmap_data[key]['data']['plot_data']['weekly_binned_result'] = \
+        weekly_binned_result.transpose()
+
+
+def rework_index(result_dict):
+    for bin_key, dataframe in zip(result_dict.keys(), result_dict.values()):
+        new_index = dataframe.index.to_list()
+        for i in range(len(new_index)):
+            timestamp = new_index[i]
+            if bin_key == 'monthly':
+                # Date-time index with MM-YY format.
+                new_index[i] = timestamp.strftime('%m-%y')
+            else:
+                # Date-time index with WW-YY format.
+                new_index[i] = timestamp.strftime('%U-%y')
+        dataframe.index = new_index
+    return
+
+
+def plot_figures():
+    data_to_plot = heatmap_data[key]['data']['plot_data']['monthly_binned_result']
+    data_to_plot2 = heatmap_data[key]['data']['plot_data']['weekly_binned_result']
+    stations = heatmap_data[key]['stations']
+    stations2 = heatmap_data[key]['stations']  # todo: THIS NEEDS FIXING stations2 != stations
+    domain_title = key
+
+    fig = plt.figure(figsize=(12, 6))
+
+    # Call the heatmap and set the center at 95% to have everything
+    # lower. We have stations that run two or more instruments so we
+    # can get more than 100% coverage but that is fine, by setting
+    # vmax to 100%.
+    ax = seaborn.heatmap(data_to_plot,
+                         center=95,
+                         vmin=0, vmax=100,
+                         cmap='coolwarm_r',
+                         linewidths=.05,
+                         yticklabels=stations,
+                         # Circa 20 x-labels for each figure.
+                         xticklabels=ceil(len(data_to_plot.columns) / 20))
+    # Rotate the x-labels.
+    ax.set_xticklabels(ax.get_xticklabels(), rotation=80)
+
+    # now finish the plot and save it
+    # plt.title('ICOS ' + domain_title + ' raw data coverage % per week and station')
+    # plt.tight_layout()
+    # plt.savefig('heatmap'+domain+'.pdf')
+    # plt.savefig('heatmap'+domain+'.png')
+    plt.show()
+    plt.close(fig)
+
+    fig = plt.figure(figsize=(12, 6))
+    ax = seaborn.heatmap(data_to_plot2,
+                         center=95,
+                         vmin=0, vmax=100,
+                         cmap='coolwarm_r',
+                         linewidths=.05,
+                         yticklabels=stations2,
+                         # Circa 20 x-labels for each figure.
+                         xticklabels=ceil(len(data_to_plot2.columns) / 20))
+    # Rotate the x-labels.
+    ax.set_xticklabels(ax.get_xticklabels(), rotation=80)
+    plt.show()
+    plt.close(fig)
 
 
 heatmap_data = initialise_data()
@@ -313,9 +425,11 @@ for key in heatmap_data.keys():
     create_query()
     run_query()  # todo: FIX INSIDE FUNCTION.
     parse_data()
+    create_heatmap_data()
+    plot_figures()
 
 # pprint(heatmap_data)
-print(heatmap_data['atmosphere']['data']['parsed_data_last_6_months'])
+# print(heatmap_data['atmosphere']['data']['parsed_data_last_6_months'])
 # atm_last_6_months = atm.loc[(atm['start'] >= start) & (atm['start'] <= end)]
 # start = heatmap_data[key]['dates']['six_months_ago']
 # print(type(start))
