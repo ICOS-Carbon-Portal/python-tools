@@ -1,19 +1,21 @@
 # (c) ICOS Carbon Portal, Lund Sweden
-# Author: Alex Vermeulen, alex.vermeulen@icos-ri.eu
-# May 2020
+# Author: Alex Vermeulen, alex.vermeulen@icos-ri.eu,
+# Co-developer: Zois Zogopoulos, zois.zogopoulos@nateko.lu.se
+# November 2021
 # licence: GNU GENERAL PUBLIC LICENSE V3
 #
 # Create heatmap showing data coverage of raw data available from ICOS
 # Carbon Portal as submitted by the measurements stations of the
 # domains Ecosystem and Atmosphere.
 
-import pandas as pd
-from math import ceil
+# Standard library imports.
 import datetime as dt
-import seaborn  # For data visualization.
-import matplotlib.pyplot as plt
-
+from math import ceil
+# Related third party imports.
 from icoscp.sparql.runsparql import RunSparql
+import matplotlib.pyplot as plt
+import pandas as pd
+import seaborn  # For data visualization.
 
 
 def initialise_data():
