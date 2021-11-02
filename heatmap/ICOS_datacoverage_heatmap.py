@@ -230,68 +230,6 @@ def create_plot_data():
     return
 
 
-def resample_data(data_dict):
-    """
-    Resample parsed data monthly or weekly.
-
-    Parameters:
-        data_dict: dict
-            `data_dict` contains `parsed_data` and
-            `parsed_data_last_6_months` dataframes.
-
-    Returns:
-        binned_data: list
-            `binned_data` contains the resampled versions of
-            `parsed_data` and `parsed_data_last_6_months` to monthly
-            and weekly bins respectively.
-    """
-    binned_data = list()
-    stations = heatmap_data[key]['stations']
-    for data_key, dataframe in zip(data_dict.keys(), data_dict.values()):
-        binned_result = pd.DataFrame()
-        for station in stations:
-            series = dataframe.query('station == "' + station + '"')['period']
-            series = series.rename(station)
-            if data_key == 'all':
-                # Resample the dataframe in monthly bins.
-                series = series.resample('M').sum()/dt.timedelta(days=30)*100
-            else:
-                # Resample the dataframe in weekly bins.
-                series = series.resample('W').sum()/dt.timedelta(days=7)*100
-            # Concatenate each station's data to the 'binned_result'
-            # dataframe.
-            binned_result = pd.concat([binned_result, series], axis=1, sort=False)
-        binned_data.append(binned_result)
-    return binned_data
-
-
-def rework_index(reindex_dict):
-    """
-    Edit the index of dataframes.
-
-    Parameters:
-        reindex_dict: dict
-            `reindex_dict` contains data that will be re-indexed using
-            `strftime()` function for a better visualization of data
-            per time period.
-
-    Returns:
-        None
-    """
-    for bin_key, dataframe in zip(reindex_dict.keys(), reindex_dict.values()):
-        new_index = dataframe.index.to_list()
-        for i in range(len(new_index)):
-            timestamp = new_index[i]
-            if bin_key == 'monthly':
-                # Date-time index with MM-YY format.
-                new_index[i] = timestamp.strftime('%m-%y')
-            else:
-                # Date-time index with WW-YY format.
-                new_index[i] = timestamp.strftime('%U-%y')
-        dataframe.index = new_index
-    return
-
-
 def plot_figures():
     """
     Plot final data products using seaborn's heatmap.
