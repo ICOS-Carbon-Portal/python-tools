@@ -9,8 +9,8 @@
 # domains Ecosystem and Atmosphere.
 
 # Standard library imports.
-import datetime as dt
 from math import ceil
+import datetime as dt
 # Related third party imports.
 from icoscp.sparql.runsparql import RunSparql
 import matplotlib.pyplot as plt
@@ -245,10 +245,12 @@ def plot_figures():
         # Set the frequency of the x axis labels.
         if plot_key == 'all':
             x_tick_labels = ceil(len(plot_dataframe.columns) / 20)
-            domain += '_monthly'
+            file_name = 'heatmap_' + domain[0:3] + '_m'
+            title = 'ICOS ' + domain + ' raw data coverage % per month and station'
         else:
             x_tick_labels = 1
-            domain += '_weekly'
+            file_name = 'heatmap_' + domain[0:3] + '_w'
+            title = 'ICOS ' + domain + ' raw data coverage % per week and station'
         # Call the heatmap and set the center at 95% to have everything
         # lower. We have stations that run two or more instruments so
         # we can get more than 100% coverage but that is fine, by
@@ -264,11 +266,12 @@ def plot_figures():
         # Rotate the x-labels.
         ax.set_xticklabels(ax.get_xticklabels(), rotation=80)
         # Finish the plot and save it.
-        plt.title('ICOS ' + domain + ' raw data coverage % per month and station')
-        plt.savefig('heatmap' + '_' + domain + '.pdf')
-        plt.savefig('heatmap' + '_' + domain + '.png')
+        plt.title(title)
+        plt.savefig(file_name + '.pdf')
+        plt.savefig(file_name + '.png')
         plt.show()
         plt.close(fig)
+    return
 
 
 if __name__ == '__main__':
