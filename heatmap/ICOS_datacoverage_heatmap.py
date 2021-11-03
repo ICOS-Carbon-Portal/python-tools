@@ -1,6 +1,6 @@
 # (c) ICOS Carbon Portal, Lund Sweden
-# Author: Alex Vermeulen, alex.vermeulen@icos-ri.eu,
-# Co-developer: Zois Zogopoulos, zois.zogopoulos@nateko.lu.se
+# Authors: Alex Vermeulen, Zois Zogopoulos
+# contact: alex.vermeulen@icos-ri.eu, zois.zogopoulos@nateko.lu.se
 # November 2021
 # licence: GNU GENERAL PUBLIC LICENSE V3
 #
