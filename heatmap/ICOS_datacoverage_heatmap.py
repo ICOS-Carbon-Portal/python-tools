@@ -2,7 +2,7 @@
 # Authors: Alex Vermeulen, Zois Zogopoulos
 # contact: alex.vermeulen@icos-ri.eu, zois.zogopoulos@nateko.lu.se
 # November 2021
-# licence: GNU GENERAL PUBLIC LICENSE V3
+# licence: https://data.icos-cp.eu/licence
 #
 # Create heatmap showing data coverage of raw data available from ICOS
 # Carbon Portal as submitted by the measurements stations of the
