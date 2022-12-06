@@ -27,6 +27,7 @@ atmosphere_heatmap.AtmosphereHeatmap(start=custom_start, end=custom_end, bin=cus
 ```
 
 ## Cached data
-For sequential runs, the application uses a built-in cache of raw atmospheric and ecosystem data which is located under 
-`input-files` directory. In order to fetch the latest data, please, remove the `input-files` directory. This will force 
-the application to re-download the data from ICOS Carbon Portal getting you the latest updates.
+For sequential runs, the application uses a built-in cache of raw atmospheric and ecosystem data which is automatically
+generated after the first execution of the program and is located under `input-files` directory. In order to fetch the 
+latest data, please, remove the `input-files` directory. This will force the application to re-download the data from 
+ICOS Carbon Portal getting you the latest updates.
