@@ -279,10 +279,10 @@ class Heatmap:
         # The bottom layer of the plot does not contain actual data
         # values. We use this layer to just plot the left y-labels and
         # the bottom x-labels.
-        empty_data = self.parsed_data.copy()
-        for column in empty_data.columns:
-            empty_data[column].values[:] = float("Nan")
-        ax = seaborn.heatmap(pandas.DataFrame(),
+        # empty_data = self.parsed_data.copy()
+        # for column in empty_data.columns:
+        #     empty_data[column].values[:] = float("Nan")
+        ax = seaborn.heatmap(self.parsed_data,
                              center=95,
                              vmin=0, vmax=100,
                              cbar=False,
