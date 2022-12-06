@@ -1,0 +1,4 @@
+icoscp==0.1.17
+matplotlib==3.6.2
+seaborn==0.12.1
+
