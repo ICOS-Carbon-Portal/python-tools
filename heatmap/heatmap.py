@@ -274,8 +274,16 @@ class Heatmap:
         # Set the frequency of the x-axis labels.
         title = None
         x_tick_labels = len(self.parsed_data.columns) // 20
+
+        # if self.bin == 'M':
+        #     x_tick_labels = ['01-22', '02-22', '03-22', '04-22', '05-22', '06-22',
+        #                      '07-22', '08-22', '09-22', '10-22', '11-22', '12-22']
+        # else:
+        #     x_tick_labels = len(self.parsed_data.columns) // 20
         file_name = f'heatmap_{self.domain[0:3]}_{self.bin.lower()}'
-        title = f'\nICOS | {self.domain} raw data\ncoverage per {"month" if self.bin == "M" else "week"} and station\n'
+        title = f'\nICOS | {self.domain} raw data\n' \
+                f'coverage per {"month" if self.bin == "M" else "week"} and station\n' \
+                f'for {self.period}'
         # The bottom layer of the plot does not contain actual data
         # values. We use this layer to just plot the left y-labels and
         # the bottom x-labels.
@@ -318,6 +326,7 @@ class Heatmap:
         ax2.set_yticklabels(ax2.get_yticklabels(), fontdict={'fontsize': 10, 'fontweight': 400})
         ax.set_xticklabels(ax.get_xticklabels(), rotation=80, fontdict={'fontsize': 14})
         ax2.set_ylabel(ylabel=f'Total Percentages for {self.period}',
+        # ax2.set_ylabel(ylabel=f'Total Percentages for 2021 - 2022',
                        fontdict={'fontsize': 18, 'fontweight': 'bold'},
                        labelpad=10)
         # Finish the plot and save it.
@@ -331,9 +340,14 @@ class Heatmap:
         plt.gcf().text(x=0, y=0, s='\n\n')
         plt.gcf().text(x=0.92, y=0.92, s=' ')
         plt.tight_layout()
-        plt.savefig(f'{file_name}.pdf')
-        plt.savefig(f'{file_name}.png')
+        # plt.savefig(f'{file_name}.pdf')
+        # plt.savefig(f'{file_name}.png')
         plt.show()
         plt.close(fig)
+
+        # Save percentages to .csv format.
+        # pandas.DataFrame(
+        #     {'stations': self.stations,
+        #      'percentages': formatted_percentages}).to_csv(f'{self.domain}_{self.period[3:7]}.csv')
         return
 
