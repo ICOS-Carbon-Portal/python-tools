@@ -19,12 +19,12 @@ will be stored (cached) to a custom path.
 - `end`: A string value representing the end datetime for slicing raw data.
 - `group`: The value of this setting controls the binning of the raw data. It 
 can be set to "M" for monthly bins or "W" for weekly bins.
-- title_period: A string value that controls the time period in the title of 
+- `title_period`: A string value that controls the time period in the title of 
 the `.png` plot.
-- side_title_period: A string value that controls the time period in the side 
+- `side_title_period`: A string value that controls the time period in the side 
 title of the `.png` plot.
-- file_name_period: A string value that controls the time period in the names
+- `file_name_period`: A string value that controls the time period in the names
 of the `.png` and `.csv` files.
-- output_dir: The location where the generated files will be saved.
-- version_output: A boolean value that determines whether files are saved 
+- `output_dir`: The location where the generated files will be saved.
+- `version_output`: A boolean value that determines whether files are saved 
 directly in output_dir or in timestamped subdirectories.
