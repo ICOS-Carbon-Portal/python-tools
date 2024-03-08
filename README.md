@@ -28,3 +28,9 @@ of the `.png` and `.csv` files.
 - `output_dir`: The location where the generated files will be saved.
 - `version_output`: A boolean value that determines whether files are saved 
 directly in output_dir or in timestamped subdirectories.
+
+
+## Generated heatmaps examples
+<img src="atc_example.png" alt="atc heatmap" width="900" height="560">
+<hr>
+<img src="etc_example.png" alt="etc heatmap" width="900" height="560">
