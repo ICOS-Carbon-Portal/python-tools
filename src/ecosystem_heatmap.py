@@ -5,19 +5,21 @@ from datetime import datetime
 # Related third party imports.
 
 # Local application/library specific imports.
+import constants as c
 from heatmap import Heatmap
 
 
 class EcosystemHeatmap(Heatmap):
-    def __init__(self, start='2017-01-01', end=datetime.now().strftime('%Y-%m-%d'), bin='M', period=None):
-        self.bin = bin
+    def __init__(self, start=c.START, end=datetime.now().strftime('%Y-%m-%d'),
+                 group='M', period=None):
+        self.bin = group
         super().__init__()
         self.start = start
         self.end = end
         self.domain = 'ecosystem'
-        self.object_specification = '<http://meta.icos-cp.eu/resources/cpmeta/etcEddyFluxRawSeriesCsv>' \
-                                    + '<http://meta.icos-cp.eu/resources/cpmeta/etcEddyFluxRawSeriesBin>'
+        self.object_specification = c.EDDY_CSV + c.EDDY_BIN
         self.query = self.object_specification
+        # Todo: this should be in the settings.
         self.raw_data_cache = 'input-files/etc_raw_data.csv'
         self.stations = self.raw_data_cache
         self.stations_info = (self.stations, self.raw_data_cache)
