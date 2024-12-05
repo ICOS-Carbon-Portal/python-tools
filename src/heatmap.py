@@ -8,8 +8,8 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn
 # Local application/library specific imports.
-from src.settings import YamlSettings
-from src.constants import cpmeta, icons, general_settings
+from settings import YamlSettings
+from constants import cpmeta, icons, general_settings
 from icoscp.sparql.runsparql import RunSparql
 
 
@@ -25,19 +25,19 @@ class Heatmap:
 
     def __init__(self, settings: YamlSettings):
         self.s = settings
-        if self.s.domain == 'atc':
+        if self.s.domain == 'atmosphere':
             self.obj_spec = cpmeta.GATOS + cpmeta.PICARRO
-        elif self.s.domain == 'etc':
+        elif self.s.domain == 'ecosystem':
             self.obj_spec = cpmeta.EDDY_CSV + cpmeta.EDDY_BIN
         else:
             print(f'No heatmap implementation for {self.s.domain}'
                   f' domain. Blame Zois.')
-        self.output_dir = None
+        # self.output_dir = None
         self.raw_data = None
         self.stations = sorted(self.raw_data['station'].unique())
         self.stations_info = (self.stations, self.raw_data)
         self.parsed_data = self.stations_info
-        self.plot_figures()
+        self.plt, self.fig = self.plot_figures()
         return
 
     @property
@@ -320,15 +320,15 @@ class Heatmap:
         plt.gcf().text(x=0, y=0, s='\n\n')
         plt.gcf().text(x=0.92, y=0.92, s=' ')
         plt.tight_layout()
-        self.save_to_files(percentages=df_input)
+        # self.save_to_files(percentages=df_input)
         # Use the line below to make the plot appear in your IDE.
         # plt.show()
-        plt.close(fig)
-        return
+        # plt.close(fig)
+        return plt, fig
 
     def get_title_args(self) -> dict:
         title = '\nICOS | {} raw data\ncoverage per {} and station\nfor {}'.\
-            format('atmosphere' if self.s.domain == 'atc' else 'ecosystem',
+            format(self.s.domain,
                    'month' if self.s.group == 'M' else 'week',
                    self.s.title_period)
         font_dict = {'fontsize': 20,

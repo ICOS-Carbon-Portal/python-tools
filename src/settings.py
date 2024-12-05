@@ -5,22 +5,22 @@ from datetime import datetime
 # Related third party imports.
 import yaml
 # Local application/library specific imports.
-from src.constants.general_settings import YAML_SETTINGS
+from constants.general_settings import YAML_SETTINGS
 
 
 @dataclass(frozen=True)
 class YamlSettings:
-    domain: str | None
-    using_cache: bool
-    cache_path: str
-    start: str | None
-    end: str | None
-    group: str | None
-    title_period: str | None
-    side_title_period: str | None
-    file_name_period: str | None
-    output_dir: str
-    version_output: bool
+    domain: str | None = 'atmosphere'
+    start: str | None = '01/01/2020'
+    end: str | None = '31/12/2020'
+    group: str | None = 'M'
+    title_period: str | None = '2020'
+    side_title_period: str | None = '2020'
+    using_cache: bool = 'True'
+    cache_path: str = 'cache'
+    # file_name_period: str | None = 'todo'
+    # output_dir: str = 'output'
+    # version_output: bool = True
 
 
 class Settings:
@@ -32,8 +32,14 @@ class Settings:
 
     @staticmethod
     def read_settings() -> YamlSettings:
-        with open(YAML_SETTINGS, 'r') as yaml_handler:
-            return YamlSettings(**yaml.safe_load(yaml_handler))
+        try:
+            with open(YAML_SETTINGS, 'r') as yaml_handler:
+                data = YamlSettings(**yaml.safe_load(yaml_handler))
+        except FileNotFoundError:
+            return YamlSettings()
+        else:
+            return data
+
 
     def init_files(self) -> None:
         cache_file = Path(self.settings.cache_path)
