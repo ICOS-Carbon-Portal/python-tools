@@ -8,8 +8,8 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn
 # Local application/library specific imports.
-from settings import YamlSettings
-from constants import cpmeta, icons, general_settings
+from src.settings import YamlSettings
+from src.constants import cpmeta, icons, general_settings
 from icoscp.sparql.runsparql import RunSparql
 
 

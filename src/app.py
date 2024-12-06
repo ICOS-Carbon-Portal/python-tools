@@ -7,8 +7,8 @@ import os
 from flask import Flask, render_template, request
 
 # Local application/library specific imports.
-from settings import YamlSettings
-from heatmap import Heatmap
+from src.settings import YamlSettings
+from src.heatmap import Heatmap
 
 app = Flask(__name__)
 

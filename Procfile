@@ -1,1 +1,1 @@
-web: PYTHONPATH=src gunicorn app:app --bind 0.0.0.0:$PORT --workers 3
+web: gunicorn -b 0.0.0.0:5000 src.app:app

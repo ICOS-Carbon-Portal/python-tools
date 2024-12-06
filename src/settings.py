@@ -5,7 +5,7 @@ from datetime import datetime
 # Related third party imports.
 import yaml
 # Local application/library specific imports.
-from constants.general_settings import YAML_SETTINGS
+from src.constants.general_settings import YAML_SETTINGS
 
 
 @dataclass(frozen=True)
