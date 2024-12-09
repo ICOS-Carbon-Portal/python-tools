@@ -10,6 +10,7 @@ from src.constants.general_settings import YAML_SETTINGS
 
 @dataclass(frozen=True)
 class YamlSettings:
+    cache_path: str
     domain: str | None = 'atmosphere'
     start: str | None = '01/01/2020'
     end: str | None = '31/12/2020'
@@ -17,7 +18,6 @@ class YamlSettings:
     title_period: str | None = '2020'
     side_title_period: str | None = '2020'
     using_cache: bool = 'True'
-    cache_path: str = 'cache'
     # file_name_period: str | None = 'todo'
     # output_dir: str = 'output'
     # version_output: bool = True
@@ -39,7 +39,6 @@ class Settings:
             return YamlSettings()
         else:
             return data
-
 
     def init_files(self) -> None:
         cache_file = Path(self.settings.cache_path)

@@ -61,7 +61,7 @@ class Heatmap:
 
     @raw_data.setter
     def raw_data(self, _):
-        if Path(self.s.cache_path).exists():
+        if self.s.using_cache and Path(self.s.cache_path).exists():
             raw_data = pd.read_csv(self.s.cache_path)
             # todo: Find a way to read the csv file with the below
             #  changes directly using pandas arguments.

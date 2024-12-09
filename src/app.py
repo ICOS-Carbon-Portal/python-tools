@@ -20,12 +20,13 @@ def index():
     domain, start, end, group, title_period, side_title_period = (None,) * 6
     if request.method == 'POST':
         settings = YamlSettings(
+            using_cache := f'{request.form.get("domain")}_cache',
             domain := request.form.get('domain'),
             start := request.form.get('start'),
             end := request.form.get('end'),
             group := 'M' if request.form.get('group') == 'monthly' else 'W',
             title_period := request.form.get('main_title_period'),
-            side_title_period := request.form.get('side_title_period')
+            side_title_period := request.form.get('side_title_period'),
         )
         heatmap_obj = Heatmap(settings=settings)
         plot, fig = heatmap_obj.plt, heatmap_obj.fig
