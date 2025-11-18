@@ -18,9 +18,9 @@ class YamlSettings:
     title_period: str | None = '2020'
     side_title_period: str | None = '2020'
     using_cache: bool = 'True'
-    # file_name_period: str | None = 'todo'
-    # output_dir: str = 'output'
-    # version_output: bool = True
+    cache_path: str | Path = Path('cache')
+    file_name_period: str | None = 'todo'
+    output_dir: str = 'output'
 
 
 class Settings:
@@ -32,16 +32,10 @@ class Settings:
 
     @staticmethod
     def read_settings() -> YamlSettings:
-        try:
-            with open(YAML_SETTINGS, 'r') as yaml_handler:
-                data = YamlSettings(**yaml.safe_load(yaml_handler))
-        except FileNotFoundError:
-            return YamlSettings()
-        else:
-            return data
+        with open(YAML_SETTINGS, 'r') as yaml_handler:
+            data = YamlSettings(**yaml.safe_load(yaml_handler))
+        return data
 
     def init_files(self) -> None:
-        cache_file = Path(self.settings.cache_path)
-        # Create the cache directory if it doesn't exist.
-        Path(cache_file.parents[0]).mkdir(parents=True, exist_ok=True)
+        Path(self.settings.output_dir).mkdir(parents=True, exist_ok=True)
         return

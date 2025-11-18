@@ -25,9 +25,9 @@ class Heatmap:
 
     def __init__(self, settings: YamlSettings):
         self.s = settings
-        if self.s.domain == 'atmosphere':
+        if self.s.domain in ['atmosphere', 'atc']:
             self.obj_spec = cpmeta.GATOS + cpmeta.PICARRO
-        elif self.s.domain == 'ecosystem':
+        elif self.s.domain in ['ecosystem', 'etc']:
             self.obj_spec = cpmeta.EDDY_CSV + cpmeta.EDDY_BIN
         else:
             print(f'No heatmap implementation for {self.s.domain}'
@@ -40,20 +40,20 @@ class Heatmap:
         self.plt, self.fig = self.plot_figures()
         return
 
-    @property
-    def output_dir(self):
-        return self._output_dir
-
-    @output_dir.setter
-    def output_dir(self, _):
-        if self.s.version_output:
-            output_dir = f'{self.s.output_dir}' \
-                         f'{datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")}'
-        else:
-            output_dir = self.s.output_dir
-        Path(output_dir).mkdir(parents=True, exist_ok=True)
-        self._output_dir = output_dir
-        return
+    # @property
+    # def output_dir(self):
+    #     return self._output_dir
+    #
+    # @output_dir.setter
+    # def output_dir(self, _):
+    #     if self.s.version_output:
+    #         output_dir = f'{self.s.output_dir}' \
+    #                      f'{datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")}'
+    #     else:
+    #         output_dir = self.s.output_dir
+    #     Path(output_dir).mkdir(parents=True, exist_ok=True)
+    #     self._output_dir = output_dir
+    #     return
 
     @property
     def raw_data(self):
@@ -320,7 +320,7 @@ class Heatmap:
         plt.gcf().text(x=0, y=0, s='\n\n')
         plt.gcf().text(x=0.92, y=0.92, s=' ')
         plt.tight_layout()
-        # self.save_to_files(percentages=df_input)
+        self.save_to_files(percentages=df_input)
         # Use the line below to make the plot appear in your IDE.
         # plt.show()
         # plt.close(fig)
@@ -342,13 +342,13 @@ class Heatmap:
     def save_to_files(self, percentages: dict[str, list]) -> None:
         print('Generating .png and .csv files...')
         figure_path = Path(
-            self.output_dir,
+            self.s.output_dir,
             f'heatmap_{self.s.domain}_'
             f'{self.s.group.lower()}_'
             f'{self.s.file_name_period}.png'
         )
         percent_path = Path(
-            self.output_dir,
+            self.s.output_dir,
             f'{self.s.domain}_'
             f'{self.s.group.lower()}_'
             f'{self.s.file_name_period}_'
