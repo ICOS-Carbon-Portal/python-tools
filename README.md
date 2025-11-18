@@ -4,8 +4,8 @@ submitted by the measurement stations of the Ecosystem and Atmosphere domains.
 
 ## How to run
 - Install the needed dependencies using `pip install -r requirements.txt`
-- Customize your settings by filling in the details in `settings.yml`. Refer to
-the `settings_example.yml` file or [here](#settings) for guidance.
+- Customize your settings by filling in the details in `settings.yml`. Please
+  see the section below for a detailed explanation.
 - Run `python3 runner.py`.
 - Find generated plots and data in the custom output path specified in the 
 application's settings. 
